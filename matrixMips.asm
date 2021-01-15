@@ -18,7 +18,7 @@ NumMayorImpar: .space 10000
    cero: .word 0   
 .text
    main:
-  la $a2, Vector
+  la $a2, Vector                    #Declaran variables y espacio en memoria a usar
   la $t2,NumMenorImpar
   la $t1,NumMenorPar
  la $s3,NumMayorImpar
@@ -33,15 +33,17 @@ NumMayorImpar: .space 10000
   lw $a0, cuatro
   lw $a3, uno
 
-    jal procedimiento
-       add $t3,$zero,$zero
-    jal repetidosMenores
-    move $t8, $v0
-    move $t9, $v1
+    jal procedimiento # Se salta al  procedimiento donde se encuentran los menores y mayores de cada índice(par e impar)
+       add $t3,$zero,$zero # se resetea t3 en cero
+    jal repetidosMenores    # procedimiento donde se calculan cuántas veces que están los menores pares e impares
+    
+    #Resetreo de variables
+    move $t8, $v0             
+    move $t9, $v1         
     add $t3,$zero,$zero
     add $v0, $zero, $zero
     add $v1, $zero, $zero
-    jal repetidosMayores
+    jal repetidosMayores  # procedimiento donde se calculan cuántas veces  están los mayores pares e impares
     move $t6, $v0
     move $t7, $v1
      li $v0,10
@@ -50,143 +52,143 @@ NumMayorImpar: .space 10000
       
  
 procedimiento:
-add $t6,$t6, $zero
-lw $t4,0($a2)
-and $t3, $t4, 1
-beq $t3,1, calcularIndImpares
-beq $t3,0,calcularIndPares
+add $t6,$t6, $zero # Se carga con cero t6, vairable con la que se recorre el vector para mirar si el índice es par o impar
+lw $t4,0($a2) # se carga el primer valor del vector
+and $t3, $t6, 1 # se usa un and para mirar si t6 es par o impar
+beq $t3,1, calcularIndImpares # si es impar salta
+beq $t3,0,calcularIndPares # si es par salta
 continuar:
-        add $t5,$t5,$a3
-        add $t6,$t6,$a3
-        bne  $t5,10,procedimiento
-        jr $ra
+        add $t5,$t5,$a3 # se suma uno a t5, variable que maneja las veces que se repite el procedimiento
+        add $t6,$t6,$a3 # Se suma 1 a t6, vairable con la que se recorre el vector para mirar si el índice es par o impar
+        bne  $t5,10,procedimiento # si no se han recorrido todos los indices se devuelve a iterar
+        jr $ra # se devuelve al rograma prinicpal
         
 calcularIndImpares:
-lw $t4,0($a2) 
-lw $t6,cero
-slt $t7, $t4, $t6
-beq $t7,1, menoresImpares 
-beq $t7,0,mayoresImpares
+lw $t4,0($a2)    # se carga el primer valor del vector
+lw $t8,cero      # se carga un cero en t8
+slt $t7, $t4, $t8 # si t4 es menor que cero es porque es un candidato a ser el menor si no es un candidato a ser el mayor
+beq $t7,1, menoresImpares   # si t7 es uno salta
+beq $t7,0,mayoresImpares   # si t7 es cero salta
 iteracion:
-add $a2, $a2,$a0
+add $a2, $a2,$a0  #añade 4 a la posición en memoria del vector
 #add $t2,$t2,$a0
-j continuar
+j continuar # se devuelve a seguir iterando
 
 calcularIndPares:
-lw $t4,0($a2) 
-lw $t6,cero
-slt $t7, $t4, $t6
-beq $t7,1, menoresPares 
-beq $t7,0,mayoresPares
+lw $t4,0($a2)  # se carga el primer valor del vector
+lw $t8,cero   # se carga un cero en t8
+slt $t7, $t4, $t8 # si t4 es menor que cero es porque es un candidato a ser el menor si no es un candidato a ser el mayor
+beq $t7,1, menoresPares  # si t7 es uno salta
+beq $t7,0,mayoresPares # si t7 es cero salta
 iteracion2:
-add $a2, $a2,$a0
+add $a2, $a2,$a0 #añade 4 a la posición en memoria del vector
 
 #add $t1,$t1,$a0
-j continuar
+j continuar # se devuelve a seguir iterando
 
 
 menoresImpares:
-sw $t4,($t1)
-lw $t8,($t1)
-lw $t7,-4($t1)
-slt $t3,$t8,$t7
-beq $t3,1, guardarMenorImpar
+sw $t4,($t1) #se guarda el número en t1
+lw $t8,($t1)  #se carga el número en t8
+lw $t7,-4($t1) # se carga el valor en memoria anterior para comparar
+slt $t3,$t8,$t7 # si t8 es menor que t7 entonces es el nuevo menor
+beq $t3,1, guardarMenorImpar #salta si t3 es 1
 contadorMemoria:
-add $t1,$t1,$a0
+add $t1,$t1,$a0 # añade 4 a la posición en memoria 
 
 
-j iteracion
+j iteracion # se devuelve a seguir iterando
 
 mayoresImpares:
-sw $t4,($s3)
-lw $t8,($s3)
-lw $t7,-4($s3)
-slt $t3,$t8,$t7
-beq $t3,0, guardarMayorImpar
+sw $t4,($s3) #se carga el número en t8
+lw $t8,($s3)  #se carga el número en t8
+lw $t7,-4($s3)  # se carga el valor en memoria anterior para comparar
+slt $t3,$t8,$t7 # si t8 es mayor que t7 entonces es el nuevo mayor
+beq $t3,0, guardarMayorImpar #salta si t3 es 0
 contadorMemoria3:
-add $t1,$t1,$a0
-j iteracion
+add $t1,$t1,$a0 # añade 4 a la posición en memoria 
+j iteracion  # se devuelve a seguir iterando
 
 menoresPares:
-sw $t4,($t2)
-lw $t9,($t2)
-lw $t7,-4($t2)
-slt $t3,$t9,$t7
-beq $t3,1, guardarMenorPar
+sw $t4,($t2) #se guarda el número en t2
+lw $t9,($t2) #se carga el número en t9
+lw $t7,-4($t2)  # se carga el valor en memoria anterior para comparar
+slt $t3,$t9,$t7 # si t9 es menor que t7 entonces es el nuevo menor
+beq $t3,1, guardarMenorPar  #salta si t3 es 1
 contadorMemoria2:
-add $t2,$t2,$a0
-j iteracion
+add $t2,$t2,$a0 # añade 4 a la posición en memoria
+j iteracion # se devuelve a seguir iterando
 
 
 mayoresPares:
-sw $t4,($s6)
-lw $t9,($s6)
-lw $t7,-4($s6)
-slt $t3,$t9,$t7
-beq $t3,0, guardarMayorPar
+sw $t4,($s6) #se carga el número en s6
+lw $t9,($s6) #se carga el número en t9
+lw $t7,-4($s6) # se carga el valor en memoria anterior para comparar
+slt $t3,$t9,$t7 # si t9 es mayor que t7 entonces es el nuevo mayor
+beq $t3,0, guardarMayorPar  #salta si t3 es 0
 contadorMemoria4:
-add $t2,$t2,$a0
-j iteracion
+add $t2,$t2,$a0 # añade 4 a la posición en memoria
+j iteracion # se devuelve a seguir iterando
 
 guardarMenorImpar:
-sw $t8, 0($s1)
-j contadorMemoria
+sw $t8, 0($s1) # Guarda el valor en t8 en s1
+j contadorMemoria # salta a seguir sumando en memoria
 
 guardarMenorPar:
-sw $t9, 0($s0)
-j contadorMemoria2
+sw $t9, 0($s0) # Guarda el valor en t9 en s0
+j contadorMemoria2  # salta a seguir sumando en memoria
 
 guardarMayorImpar:
-sw $t8, 0($s5)
-j contadorMemoria3
+sw $t8, 0($s5) # Guarda el valor en t8 en s5
+j contadorMemoria3  # salta a seguir sumando en memoria
 
 guardarMayorPar:
-sw $t9, 0($s4)
-j contadorMemoria4
+sw $t9, 0($s4) # Guarda el valor en t9 en s4
+j contadorMemoria4  # salta a seguir sumando en memoria
 
 repetidosMenores:
-add $t3,$t3,$a3
-lw $t0, 0($s0)
-lw $t5, 0($s1)
-lw $t4, 0($s2)
-beq $t0,$t4, contadorRepeticionesMenorPar
-beq $t5,$t4, contadorRepeticionesMenorImpar
+add $t3,$t3,$a3 # se suma 1 a t3, el cual manejará las repeticiones
+lw $t0, 0($s0) # se carga el menor par
+lw $t5, 0($s1) # se carga el menor impar
+lw $t4, 0($s2) # se carga el primer dato del vector
+beq $t0,$t4, contadorRepeticionesMenorPar # salta si el menor par es igual al valor en esa posicion del vector
+beq $t5,$t4, contadorRepeticionesMenorImpar # salta si el menor impar es igual al valor en esa posicion del vector
 loop:
-add $s2, $s2,$a0
-beq $t3,10,devolverse
-j repetidosMenores
+add $s2, $s2,$a0 # se suma 4 a la posición de memoria del vector
+beq $t3,10,devolverse # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
+j repetidosMenores # se devuelve a seguir iterando
 devolverse:
-jr $ra
+jr $ra  se devuelve al programa principal
 
 repetidosMayores:
-add $t3,$t3,$a3
-lw $t0, 0($s4)
-lw $t5, 0($s5)
-lw $t4, 0($s7)
-beq $t0,$t4, contadorRepeticionesMayorPar
-beq $t5,$t4, contadorRepeticionesMayorImpar
+add $t3,$t3,$a3 # se suma 1 a t3, el cual manejará las repeticiones
+lw $t0, 0($s4) # se carga el mayor par
+lw $t5, 0($s5) # se carga el mayor impar
+lw $t4, 0($s7)  # se carga el primer dato del vector
+beq $t0,$t4, contadorRepeticionesMayorPar # salta si el mayor par es igual al valor en esa posicion del vector
+beq $t5,$t4, contadorRepeticionesMayorImpar # salta si el mayor impar es igual al valor en esa posicion del vector
 loop2:
-add $s7, $s7,$a0
-beq $t3,10,devolverse2
-j repetidosMayores
+add $s7, $s7,$a0 # se suma 4 a la posición de memoria del vector
+beq $t3,10,devolverse2 # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
+j repetidosMayores # se devuelve a seguir iterando
 devolverse2:
-jr $ra
+jr $ra # se devuelve al programa principal
 
 contadorRepeticionesMenorPar:
-add $v0,$v0,$a3
-j loop
+add $v0,$v0,$a3 # Cuenta las repeticiones del menor par
+j loop # se devuelve a seguir iterando
 
 contadorRepeticionesMenorImpar:
-add $v1,$v1,$a3
-j loop
+add $v1,$v1,$a3 # Cuenta las repeticiones del menor impar
+j loop # se devuelve a seguir iterando
 
 contadorRepeticionesMayorPar:
-add $v0,$v0,$a3
-j loop2
+add $v0,$v0,$a3 # Cuenta las repeticiones del mayor par
+j loop2 # se devuelve a seguir iterando
 
 contadorRepeticionesMayorImpar:
-add $v1,$v1,$a3
-j loop2
+add $v1,$v1,$a3 # Cuenta las repeticiones del mayor impar
+j loop2 #se devuelve a seguir iterando
 
 
      
