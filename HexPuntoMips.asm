@@ -136,7 +136,7 @@ add $s2, $s2,$a0 # se suma 4 a la posici�n de memoria del vector
 beq $t3,10,devolverse # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
 j repetidosMenores # se devuelve a seguir iterando
 devolverse:
-jr $ra  se devuelve al programa principal
+jr $ra  #se devuelve al programa principal
 
 repetidosMayores:
 add $t3,$t3,$a3 # se suma 1 a t3, el cual manejar� las repeticiones
