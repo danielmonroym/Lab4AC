@@ -1,19 +1,18 @@
 .text
    main:
   lw $a2, 0($zero)  # se cargan los datos del vector en memoria
-  lw $t2, 48($zero) #Declaran variables y espacio en memoria a usar
-  lw $t1,52($zero)
- lw $s3,56($zero)
- lw $s6,60($zero)
-  lw $s0,64($zero)
-  lw $s1,68($zero)
-   lw $s4, 72($zero)
-  lw $s5, 76($zero)
-  lw $s2, 80($zero)
-    lw $s7, 84($zero)
-  lw $a1, 88($zero) 
-  lw $a0,  92($zero) 
-  lw $a3, 96($zero) 
+  lw $t2, 400($zero) # Espacio en memoria donde se guardan numeros menores que cero con indice impar
+  lw $t1,404($zero) # Espacio en memoria donde se guardan numeros menores que cero con indice par
+ lw $s3,408($zero)  # Espacio en memoria donde se guardan numeros mayores que cero con indice impar
+ lw $s6,412($zero)  # Espacio en memoria donde se guardan numeros mayores que cero con indice par
+  lw $s0,416($zero) # Espacio en memoria donde se guardan el numero menor  con indice par
+  lw $s1,420($zero) # Espacio en memoria donde se guardan el numero menor  con indice impar
+   lw $s4, 424($zero) # Espacio en memoria donde se guardan el numero mayor  con indice par
+  lw $s5, 428($zero) # Espacio en memoria donde se guardan el numero mayor  con indice impar
+  lw $s2, 0($zero)  # se cargan los datos del vector en memoria para crear una copia del vector intacto
+    lw $s7, 0($zero)  #  se cargan los datos del vector en memoria para crear una copia del vector intacto
+  lw $a0,  432($zero) # se carga el numero 4 de memoria
+  lw $a3, 436($zero) # se carga el numero 1 de memoria
   jal procedimiento # Se salta al  procedimiento donde se encuentran los menores y mayores de cada �ndice(par e impar)
     add $t3,$zero,$zero # se resetea t3 en cero
   jal repetidosMenores    # procedimiento donde se calculan cu�ntas veces que est�n los menores pares e impares
@@ -30,16 +29,15 @@
     add $t7, $zero, $v1
   
   procedimiento:
-add $t6,$t6, $zero # Se carga con cero t6, vairable con la que se recorre el vector para mirar si el �ndice es par o impar
-lw $t4,0($a2) # Se carga con cero t6, vairable con la que se recorre el vector para mirar si el �ndice es par o impar
+lw $t4,0($a2) # Se carga el primer dato del vector
 and $t3, $t6, 1 # se usa un and para mirar si t6 es par o impar
 beq $t3,1, calcularIndImpares  # si es impar salta
 beq $t3,0,calcularIndPares # si es par salta
 continuar:
         add $t5,$t5,$a3 # se suma uno a t5, variable que maneja las veces que se repite el procedimiento
         add $t6,$t6,$a3 # Se suma 1 a t6, vairable con la que se recorre el vector para mirar si el �ndice es par o impar
-        bne  $t5,10,procedimiento # si no se han recorrido todos los indices se devuelve a iterar
-        jr $ra # se devuelve al rograma prinicpal
+        bne  $t5,100,procedimiento # si no se han recorrido todos los indices se devuelve a iterar
+        jr $ra # se devuelve al programa prinicpal
         
 calcularIndImpares:
 lw $t4,0($a2)  # se carga el primer valor del vector
@@ -133,7 +131,7 @@ beq $t0,$t4, contadorRepeticionesMenorPar # salta si el menor par es igual al va
 beq $t5,$t4, contadorRepeticionesMenorImpar # salta si el menor impar es igual al valor en esa posicion del vector
 loop:
 add $s2, $s2,$a0 # se suma 4 a la posici�n de memoria del vector
-beq $t3,10,devolverse # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
+beq $t3,100,devolverse # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
 j repetidosMenores # se devuelve a seguir iterando
 devolverse:
 jr $ra  #se devuelve al programa principal
@@ -147,7 +145,7 @@ beq $t0,$t4, contadorRepeticionesMayorPar # salta si el mayor par es igual al va
 beq $t5,$t4, contadorRepeticionesMayorImpar # salta si el mayor impar es igual al valor en esa posicion del vector
 loop2:
 add $s7, $s7,$a0 # se suma 4 a la posici�n de memoria del vector
-beq $t3,10,devolverse2 # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
+beq $t3,100,devolverse2 # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
 j repetidosMayores # se devuelve a seguir iterando
 devolverse2:
 jr $ra # se devuelve al programa principal

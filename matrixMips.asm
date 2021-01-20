@@ -52,7 +52,6 @@ NumMayorImpar: .space 10000
       
  
 procedimiento:
-add $t6,$t6, $zero # Se carga con cero t6, vairable con la que se recorre el vector para mirar si el �ndice es par o impar
 lw $t4,0($a2) # se carga el primer valor del vector
 and $t3, $t6, 1 # se usa un and para mirar si t6 es par o impar
 beq $t3,1, calcularIndImpares # si es impar salta
@@ -158,7 +157,7 @@ add $s2, $s2,$a0 # se suma 4 a la posici�n de memoria del vector
 beq $t3,10,devolverse # cuando t3 sea igual a la cantidad de valores en el vector termina de recorrer
 j repetidosMenores # se devuelve a seguir iterando
 devolverse:
-jr $ra  se devuelve al programa principal
+jr $ra  #se devuelve al programa principal
 
 repetidosMayores:
 add $t3,$t3,$a3 # se suma 1 a t3, el cual manejar� las repeticiones
